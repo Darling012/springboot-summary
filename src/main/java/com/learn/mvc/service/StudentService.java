@@ -1,6 +1,6 @@
-package com.darling.mvc.service;
+package com.learn.mvc.service;
 
-import com.darling.mvc.domain.entities.Student;
+import com.learn.mvc.domain.entities.Student;
 
 import java.util.List;
 

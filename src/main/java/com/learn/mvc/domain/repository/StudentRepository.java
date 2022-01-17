@@ -1,6 +1,6 @@
-package com.darling.mvc.domain.repository;
+package com.learn.mvc.domain.repository;
 
-import com.darling.mvc.domain.entities.Student;
+import com.learn.mvc.domain.entities.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

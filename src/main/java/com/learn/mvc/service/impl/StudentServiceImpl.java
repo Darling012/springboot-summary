@@ -1,8 +1,8 @@
-package com.darling.mvc.service.impl;
+package com.learn.mvc.service.impl;
 
-import com.darling.mvc.domain.entities.Student;
-import com.darling.mvc.domain.repository.StudentRepository;
-import com.darling.mvc.service.StudentService;
+import com.learn.mvc.domain.entities.Student;
+import com.learn.mvc.domain.repository.StudentRepository;
+import com.learn.mvc.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

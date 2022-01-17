@@ -1,4 +1,4 @@
-package com.darling.mvc.controller;
+package com.learn.mvc.schedule;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

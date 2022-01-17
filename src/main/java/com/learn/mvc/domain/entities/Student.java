@@ -1,4 +1,4 @@
-package com.darling.mvc.domain.entities;
+package com.learn.mvc.domain.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

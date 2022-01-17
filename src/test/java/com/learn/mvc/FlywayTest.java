@@ -1,7 +1,7 @@
-package com.darling.mvc;
+package com.learn.mvc;
 
-import com.darling.mvc.domain.entities.Student;
-import com.darling.mvc.service.StudentService;
+import com.learn.mvc.domain.entities.Student;
+import com.learn.mvc.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
