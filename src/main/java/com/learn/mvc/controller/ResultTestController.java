@@ -1,10 +1,10 @@
 package com.learn.mvc.controller;
+
+import com.learn.mvc.annotation.RestUrl;
 import com.learn.mvc.body.pojo.PageResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +16,7 @@ import java.util.List;
  * @author: ling
  * @createTime: 2022-01-17 16:14
  **/
-@RestController
-@RequestMapping("api/v1/result")
+@RestUrl("api/v1/result")
 @RequiredArgsConstructor
 @Slf4j
 public class ResultTestController {

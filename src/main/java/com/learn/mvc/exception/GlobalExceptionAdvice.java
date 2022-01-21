@@ -183,7 +183,7 @@ public class GlobalExceptionAdvice {
     }
 
      /**
-     * 自定义参数错误异常处理器
+     * 增删改查错误异常处理器
      *
      * @param e 自定义参数
      * @return ResponseInfo
@@ -198,12 +198,13 @@ public class GlobalExceptionAdvice {
 
     /**
      * 统一处理未知异常
+     * 如果 @ExceptionHandler 注解中未声明要处理的异常类型，则默认为参数列表中的异常类型
      */
     @ExceptionHandler
-    public RespResult<Void> handleUnknownException(Throwable t) {
+    public RespResult<Void> handleUnknownException(Exception e) {
         // 未知异常
-        log.error("捕获到未经处理的未知异常, {}", t.getMessage());
-        log.error("", t);
+        log.error("捕获到未经处理的未知异常, {}", e.getMessage());
+        log.error("", e);
         return RespResult.fail(GlobalExceptionCode.ERROR);
     }
 

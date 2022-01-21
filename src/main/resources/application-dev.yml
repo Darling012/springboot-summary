@@ -11,3 +11,15 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
   flyway:
     baseline-on-migrate: true
+#    没有起作用 并没有抛出异常
+  mvc:
+    throw-exception-if-no-handler-found: true
+girl:
+  cupSize: B
+  age: 18
+boy :
+   name : zhangsan
+   age: 19
+
+man : "${boy}"
+women : a
