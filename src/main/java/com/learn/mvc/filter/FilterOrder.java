@@ -34,6 +34,7 @@ public class FilterOrder implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         log.info("1、执行-----FilterOrder----start-----");
+        // 单体要放到最前边一个Servlet filter里  微服务就放到webFlux filter里
         MDC.put("ctxLogId", UUID.randomUUID().toString());
         ServletRequest requestWrapper = null;
         if (request instanceof HttpServletRequest) {
