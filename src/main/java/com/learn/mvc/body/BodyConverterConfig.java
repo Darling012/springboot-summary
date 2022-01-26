@@ -2,7 +2,6 @@ package com.learn.mvc.body;
 
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 /**
@@ -11,7 +10,7 @@ import org.springframework.core.annotation.Order;
  * @author: ling
  * @create: 2020-04-12 00:03
  **/
-@Configuration
+// @Configuration
 public class BodyConverterConfig {
     @Bean
     @Order(1)

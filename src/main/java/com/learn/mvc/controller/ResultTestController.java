@@ -28,13 +28,13 @@ public class ResultTestController {
     @GetMapping("str")
     public String testString(){
         log.info("执行了一个返回值为{}类型函数","String");
-        return "String";
+        return "String你好好 ";
     }
 
     @GetMapping("list")
-    public List<Integer> testList(){
+    public List<String> testList(){
         log.info("执行了一个返回值为{}类型函数","List");
-         List<Integer> list = Arrays.asList(1,2,3);
+         List<String> list = Arrays.asList("a","b","c");
         return list;
     }
 
