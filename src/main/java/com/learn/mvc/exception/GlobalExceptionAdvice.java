@@ -1,10 +1,8 @@
 package com.learn.mvc.exception;
 
 import com.learn.mvc.body.pojo.RespResult;
-import com.learn.mvc.exception.enums.GlobalExceptionCode;
 import com.learn.mvc.exception.enums.HttpStateCode;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -17,11 +15,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.validation.ConstraintDeclarationException;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 /**
@@ -59,6 +60,7 @@ public class GlobalExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
     public RespResult<Void> parameterExceptionHandler(MethodArgumentNotValidException e) {
         log.error("请求体校验不通过：{}", e.getMessage());
         log.error(ExceptionUtil.getMessage(e));
@@ -89,12 +91,18 @@ public class GlobalExceptionAdvice {
 
 
     /**
-     * 普通参数校验校验不通过会抛出 ConstraintViolationException
-     * requestParam
      *
-     * @param e 普通参数校验校验不通过
-     * @return ResponseResult
+     *parameter constraint configuration在校验方法入参的约束时，
+     * 若是@Override父类/接口的方法，那么这个入参约束只能写在父类/接口上面
      */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintDeclarationException.class)
+    public RespResult<Void> ConstraintDeclarationExceptionHandler(ConstraintDeclarationException e) {
+        log.error("ConstraintDeclarationException", e);
+        return RespResult.fail(HttpStateCode.PARAM_VALID_ERROR.getCode(), e.getMessage());
+    }
+
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public RespResult<Void> constraintViolationExceptionHandler(ConstraintViolationException e) {
@@ -200,12 +208,12 @@ public class GlobalExceptionAdvice {
      * 统一处理未知异常
      * 如果 @ExceptionHandler 注解中未声明要处理的异常类型，则默认为参数列表中的异常类型
      */
-    @ExceptionHandler
-    public RespResult<Void> handleUnknownException(Exception e) {
-        // 未知异常
-        log.error("捕获到未经处理的未知异常, {}", e.getMessage());
-        log.error("", e);
-        return RespResult.fail(GlobalExceptionCode.ERROR);
-    }
+    // @ExceptionHandler
+    // public RespResult<Void> handleUnknownException(Exception e) {
+    //     // 未知异常
+    //     log.error("捕获到未经处理的未知异常, {}", e.getMessage());
+    //     log.error("", e);
+    //     return RespResult.fail(GlobalExceptionCode.ERROR);
+    // }
 
 }

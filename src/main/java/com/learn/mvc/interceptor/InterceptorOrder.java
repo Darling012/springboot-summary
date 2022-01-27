@@ -1,7 +1,6 @@
 package com.learn.mvc.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  * 基于Java的反射机制，属于面向切面编程（AOP）的一种运用
  */
 @Slf4j
-@Component
+// @Component
 public class InterceptorOrder implements HandlerInterceptor {
     /**
      * applyPreHandle这个方法执行，就是执行的拦截器的preHandler方法

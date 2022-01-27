@@ -2,7 +2,6 @@ package com.learn.mvc.advice;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
 
 /**
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.InitBinder;
  * @ModelAttribute：为所有controller设置全局变量。
  * @InitBinder：用于为所有controller设置某个类型的数据转换器。
  */
-@ControllerAdvice
+// @ControllerAdvice
 @Slf4j
 public class ControllerAdviceOrder {
     /**

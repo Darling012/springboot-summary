@@ -32,4 +32,7 @@ public class ExceptionTestController {
     public void testFilterException(){
         log.info("filter抛出了一个异常没有被兜底异常处理器捕获");
     }
+
+
+
 }

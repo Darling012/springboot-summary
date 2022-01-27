@@ -1,7 +1,6 @@
 package com.learn.mvc.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 请求进来 会按照 filter -> interceptor -> controllerAdvice -> aspect  -> controller的顺序调用
  * 当controller返回异常 也会按照controller -> aspect -> controllerAdvice -> interceptor -> filter来依次抛出
  */
-@Configuration
+// @Configuration
 public class MyInterceptorConfig implements WebMvcConfigurer {
     @Autowired
     private InterceptorOrder InterceptorOrder;
