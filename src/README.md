@@ -39,6 +39,13 @@ spring 和 jsr提供的注解异同及校验时机？
 
 #### 统一异常处理
 
+##### 自定义异常处理器
+
+1. HandlerExceptionResolver#resolveException
+2. 注解
+3. 当两种方式都实现时，HandlerExceptionResolver要先于ControllerAdvice执行
+4. 404等，继承AbstractErrorController、ResponseEntityExceptionHandler 
+
 ##### 异常处理原则：
 
 ##### http:
@@ -46,6 +53,14 @@ spring 和 jsr提供的注解异同及校验时机？
 ##### 业务代码：
 
 ##### 线程池：
+
+##### 流程
+
+1. ExceptionHandlerMethodResolver： 此缓存Map存放了@ControllerAdvice中所有注解了@ExceptionHandler的方法，其中@ExceptionHandler的value也就是Exception做为Key，值为当前Method
+2. exceptionHandlerAdviceCache： key为标注了@ControllerAdvice的类，value为ExceptionHandlerMethodResolver
+3. SpringMVC通过HandlerExceptionResolver的resolveException调用实现类的实际实现方法doResolveException
+4. doResolveException方法实际调用ExceptionHandlerExceptionResolver的doResolveHandlerMethodException方法。
+5. 根据类型进行匹配，匹配不到getCause（）再匹配，匹配多个排序后取第一个
 
 #### 统一日志处理
 
