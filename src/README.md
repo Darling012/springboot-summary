@@ -133,3 +133,19 @@ filter ->servlet-> interceptor -> controllerAdvice -> aspect  -> controller
 
 
 
+rpc 
+```java
+        GenericResponse response = null;
+        try {
+            response = HttpClint.invoke();
+        } catch (Exception exception) {
+            log.error();
+            handlerErrorAndThrowExcetption(exception);
+        }
+        if (response.code != 200) {
+            handlerErrorAndThrowExcetption();
+        }
+        Pojo pojo = response.getData();
+```
+
+
