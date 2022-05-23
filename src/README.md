@@ -44,7 +44,7 @@ spring 和 jsr提供的注解异同及校验时机？
 1. HandlerExceptionResolver#resolveException
 2. 注解
 3. 当两种方式都实现时，HandlerExceptionResolver要先于ControllerAdvice执行
-4. 404等，继承AbstractErrorController、ResponseEntityExceptionHandler 
+4. 404等，继承AbstractErrorController、ResponseEntityExceptionHandler
 
 ##### 异常处理原则：
 
@@ -71,7 +71,7 @@ spring 和 jsr提供的注解异同及校验时机？
 
 ##### 日志分类：
 
-1. 
+1.
 
 
 
@@ -89,7 +89,11 @@ Spring提供了多种线程池：
 
 ##### 定时任务
 
-springtask默认单线程串行执行，可通过配置SchedulingConfigurer实现并行任务（ThreadPoolTaskScheduler，可注入的线程池为XXXScheduler），再加上@Async实现并行异步任务（任务里的方法设置为异步）。只加@Async也能实现并行。
+springtask默认单线程串行执行，可通过配置SchedulingConfigurer实现并行任务（ThreadPoolTaskScheduler，可注入的线程池为XXXScheduler），即不同任务方法用不同线程，解决不能同时执行不同任务。加上@Async实现并行异步任务（另起线程执行）解决单个任务需要间隔三秒，但执行了五秒，上个任务影响下个任务问题。只加@Async也能实现并行。
+
+即ThreadPoolTaskScheduler解决了调用定时任务时，当存在多个任务，提供了不同线程。
+
+@Async是异步执行，无论各个任务，还是单个任务不同循环，都是另起线程，所以实现了并行。要注意极端情况线程池没线程可用。
 
 ##### 事件监听
 
@@ -123,17 +127,17 @@ spring事件监听默认同步阻塞，实现异步借助@Async。
 
 ##### advice
 
-​    
+
 
 filter ->servlet-> interceptor -> controllerAdvice -> aspect  -> controller
 
 
 
-   
 
 
 
-rpc 
+
+rpc
 ```java
         GenericResponse response = null;
         try {
