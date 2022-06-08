@@ -1,6 +1,7 @@
 package com.learn.mvc.excel.easyexcel;
 
 import com.alibaba.excel.EasyExcel;
+import com.learn.mvc.excel.common.ImportErrVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -74,5 +76,10 @@ public class BaseDataImportServiceImpl implements BaseDataImportService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void saveImportDatas(HttpServletResponse httpServletResponse, Collection collection, List<ImportErrVo> importErrVos) {
+
     }
 }

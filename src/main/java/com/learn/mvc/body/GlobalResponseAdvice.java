@@ -38,9 +38,9 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
 
         final String returnTypeName = methodParameter.getParameterType()
                                                      .getSimpleName();
-        //  if (String.class.getSimpleName().equals(returnTypeName) || RespResult.class.getSimpleName().equals(returnTypeName)) {
-        //     return Boolean.FALSE;
-        // }
+         if (String.class.getSimpleName().equals(returnTypeName) || RespResult.class.getSimpleName().equals(returnTypeName)) {
+            return Boolean.FALSE;
+        }
 
         if (RespResult.class.getSimpleName()
                             .equals(returnTypeName)) {
@@ -71,9 +71,10 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
         if ("void".equals(returnTypeName)) {
             return RespResult.success(null);
         }
-        if (o instanceof String) {
-            return objectMapper.writeValueAsString(RespResult.success(o));
-        }
+        // 这种方式 Content-Type不是json
+        // if (o instanceof String) {
+        //     return objectMapper.writeValueAsString(RespResult.success(o));
+        // }
         // 如果不是返回json数据则不做包装
         if (!mediaType.includes(MediaType.APPLICATION_JSON)) {
             return o;
