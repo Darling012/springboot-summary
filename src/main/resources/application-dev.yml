@@ -23,3 +23,11 @@ boy :
 
 man : "${boy}"
 women : a
+
+
+logging:
+  level:
+    root: debug
+    org.apache.http.wire: debug
+    org.apache.http.headers: debug
+  config: classpath:logback-spring.xml

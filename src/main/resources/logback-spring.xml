@@ -169,6 +169,8 @@
         level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
         不能设置为INHERITED或者同义词NULL。默认是DEBUG
         可以包含零个或多个元素，标识这个appender将会添加到这个logger。
+        TRACE < DEBUG < INFO < WARN < ERROR < FATAL。
+        如果设置为 WARN ，则低于 WARN 的信息都不会输出。
     -->
 
     <!-- 4. 最终的策略 -->
