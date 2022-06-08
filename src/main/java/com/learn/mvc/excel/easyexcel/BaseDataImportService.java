@@ -10,5 +10,5 @@ public interface BaseDataImportService {
 
     void saveImportData(HttpServletResponse response, List<BaseImportEntity> successList, List<BaseErrorVo> failList);
 
-    void saveImportDatas(HttpServletResponse httpServletResponse, Collection collection, List<ImportErrVo> importErrVos);
+    void saveImportDatas(HttpServletResponse httpServletResponse, List<BaseImportEntity> successList, List<ImportErrVo> importErrVos);
 }

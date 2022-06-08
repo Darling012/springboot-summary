@@ -1,5 +1,6 @@
 package com.learn.mvc.excel.common;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
@@ -13,6 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,6 +80,22 @@ public class ImportListener<T extends ImportErrVo> extends AnalysisEventListener
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
         saveData(successList, failList);
         log.info("所有数据解析完成！");
+        if(!failList.isEmpty()){
+            try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH时mm分");
+            String fileName = URLEncoder.encode(LocalDateTime.now()
+                                                             .format(formatter) + "不合法数据", "UTF-8")
+                                        .replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=''" + fileName + ".xls");
+            EasyExcel.write(response.getOutputStream(), BaseErrorVo.class)
+                     .sheet("不合法数据")
+                     .doWrite(failList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        }
     }
 
     /**

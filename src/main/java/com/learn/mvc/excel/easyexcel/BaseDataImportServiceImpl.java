@@ -79,7 +79,26 @@ public class BaseDataImportServiceImpl implements BaseDataImportService {
     }
 
     @Override
-    public void saveImportDatas(HttpServletResponse httpServletResponse, Collection collection, List<ImportErrVo> importErrVos) {
+    public void saveImportDatas(HttpServletResponse response,  List<BaseImportEntity> successList, List<ImportErrVo> importErrVos) {
+// 1 拆分存贮数据
+        for (BaseImportEntity baseEntity : successList) {
+            TransactionStatus transactionStatus = dataSourceTransactionManager
+                    .getTransaction(transactionDefinition);
+            try {
+                //省市区县
+                @NotBlank(message = "所属区县不能为空") String court = baseEntity.getCourt();
+                @NotBlank(message = "所属区县不能为空") String settlement = baseEntity.getSettlement();
+                // 保存数据库
+                dataSourceTransactionManager.commit(transactionStatus);
+            } catch (Exception e) {
+                log.error("插入数据出现错误:{}", e.getMessage(), e);
+                ImportErrVo errorVo = new ImportErrVo();
+                BeanUtils.copyProperties(baseEntity, errorVo);
+                errorVo.setErrorReason("请检查此条数据");
+                importErrVos.add(errorVo);
+                dataSourceTransactionManager.rollback(transactionStatus);
+            }
+        }
 
     }
 }

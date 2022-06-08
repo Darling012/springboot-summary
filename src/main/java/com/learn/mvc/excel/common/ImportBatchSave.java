@@ -6,5 +6,5 @@ import java.util.List;
 
 @FunctionalInterface
 public interface ImportBatchSave<T> {
-    void accept(HttpServletResponse response, Collection<T> successList, List<ImportErrVo> failList);
+    void accept(HttpServletResponse response, List<T> successList, List<ImportErrVo> failList);
 }
