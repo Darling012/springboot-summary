@@ -61,5 +61,7 @@ public class UrlController {
     }
 
 
+//   post请求　body为formdata格式 多个参数 可以不写注解，名称匹配。params参数还是用@RequestParam。且params与formdata里数据名有重复，会成一个数组  TODO
+// post请求　body为formdata格式 可用@RequestParam获取参数，不写也能获取到
 
 }
