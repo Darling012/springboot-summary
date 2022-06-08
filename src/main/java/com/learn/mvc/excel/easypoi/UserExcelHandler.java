@@ -1,4 +1,4 @@
-package com.learn.mvc.excel;
+package com.learn.mvc.excel.easypoi;
 
 import cn.afterturn.easypoi.handler.impl.ExcelDataHandlerDefaultImpl;
 import org.slf4j.Logger;

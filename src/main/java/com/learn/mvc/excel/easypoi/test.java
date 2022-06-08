@@ -1,4 +1,4 @@
-package com.learn.mvc.excel;
+package com.learn.mvc.excel.easypoi;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;

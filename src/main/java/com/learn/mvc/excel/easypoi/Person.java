@@ -1,4 +1,4 @@
-package com.learn.mvc.excel;
+package com.learn.mvc.excel.easypoi;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 
