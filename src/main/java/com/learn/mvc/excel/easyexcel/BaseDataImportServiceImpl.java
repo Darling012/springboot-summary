@@ -4,11 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.learn.mvc.excel.common.ImportErrVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
@@ -16,7 +12,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,10 +24,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class BaseDataImportServiceImpl implements BaseDataImportService {
-    @Autowired
-    DataSourceTransactionManager dataSourceTransactionManager;
-    @Autowired
-    TransactionDefinition transactionDefinition;
+    // @Autowired
+    // DataSourceTransactionManager dataSourceTransactionManager;
+    // @Autowired
+    // TransactionDefinition transactionDefinition;
 
 
     @Override
@@ -41,21 +36,22 @@ public class BaseDataImportServiceImpl implements BaseDataImportService {
                                List<BaseErrorVo> failList) {
         // 1 拆分存贮数据
         for (BaseImportEntity baseEntity : successList) {
-            TransactionStatus transactionStatus = dataSourceTransactionManager
-                    .getTransaction(transactionDefinition);
+            // TransactionStatus transactionStatus = dataSourceTransactionManager
+            //         .getTransaction(transactionDefinition);
             try {
                 //省市区县
                 @NotBlank(message = "所属区县不能为空") String court = baseEntity.getCourt();
                 @NotBlank(message = "所属区县不能为空") String settlement = baseEntity.getSettlement();
                 // 保存数据库
-                dataSourceTransactionManager.commit(transactionStatus);
+                // dataSourceTransactionManager.commit(transactionStatus);
+                log.info("解析到一条数据{}",baseEntity.toString());
             } catch (Exception e) {
                 log.error("插入数据出现错误:{}", e.getMessage(), e);
                 BaseErrorVo errorVo = new BaseErrorVo();
                 BeanUtils.copyProperties(baseEntity, errorVo);
                 errorVo.setErrorReason("请检查此条数据");
                 failList.add(errorVo);
-                dataSourceTransactionManager.rollback(transactionStatus);
+                // dataSourceTransactionManager.rollback(transactionStatus);
             }
         }
         //    2 将失败数据返回前端
@@ -79,24 +75,24 @@ public class BaseDataImportServiceImpl implements BaseDataImportService {
     }
 
     @Override
-    public void saveImportDatas(HttpServletResponse response,  List<BaseImportEntity> successList, List<ImportErrVo> importErrVos) {
+    public void saveImportDatas(List<BaseImportEntitys> successList, List<ImportErrVo> importErrVos) {
 // 1 拆分存贮数据
-        for (BaseImportEntity baseEntity : successList) {
-            TransactionStatus transactionStatus = dataSourceTransactionManager
-                    .getTransaction(transactionDefinition);
+        for (BaseImportEntitys baseEntity : successList) {
+            // TransactionStatus transactionStatus = dataSourceTransactionManager
+            //         .getTransaction(transactionDefinition);
             try {
                 //省市区县
                 @NotBlank(message = "所属区县不能为空") String court = baseEntity.getCourt();
                 @NotBlank(message = "所属区县不能为空") String settlement = baseEntity.getSettlement();
                 // 保存数据库
-                dataSourceTransactionManager.commit(transactionStatus);
+                // dataSourceTransactionManager.commit(transactionStatus);
             } catch (Exception e) {
                 log.error("插入数据出现错误:{}", e.getMessage(), e);
                 ImportErrVo errorVo = new ImportErrVo();
                 BeanUtils.copyProperties(baseEntity, errorVo);
                 errorVo.setErrorReason("请检查此条数据");
                 importErrVos.add(errorVo);
-                dataSourceTransactionManager.rollback(transactionStatus);
+                // dataSourceTransactionManager.rollback(transactionStatus);
             }
         }
 

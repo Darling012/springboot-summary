@@ -27,7 +27,7 @@ women : a
 
 logging:
   level:
-    root: debug
+    root: info
     org.apache.http.wire: debug
     org.apache.http.headers: debug
   config: classpath:logback-spring.xml

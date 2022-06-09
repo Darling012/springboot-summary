@@ -5,9 +5,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
 import com.learn.mvc.excel.easyexcel.BaseErrorVo;
-import com.learn.mvc.excel.easyexcel.BaseImportEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,10 +17,8 @@ import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * @program: springboot-summary
@@ -44,13 +40,14 @@ public class ImportListener<T extends ImportErrVo> extends AnalysisEventListener
     /**
      * 每隔500条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
-    private static final int BATCH_COUNT = 500;
+    private static final int BATCH_COUNT = 7;
     // 成功结果集
     List<T> successList = new ArrayList<>();
     // 失败结果集
     List<ImportErrVo> failList = new ArrayList<>();
     // 验证器对象
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final Validator validator = Validation.buildDefaultValidatorFactory()
+                                                  .getValidator();
 
 
     @Override
@@ -66,10 +63,13 @@ public class ImportListener<T extends ImportErrVo> extends AnalysisEventListener
             ImportErrVo errorVo = new ImportErrVo();
             BeanUtils.copyProperties(data, errorVo);
             errorVo.setErrorReason(
-                    errorSet.stream().map(ConstraintViolation::getMessageTemplate).reduce(";", String::concat));
+                    errorSet.stream()
+                            .map(ConstraintViolation::getMessageTemplate)
+                            .reduce(";", String::concat));
             failList.add(errorVo);
         }
         if (successList.size() >= BATCH_COUNT) {
+            log.info("已成功解析{}条数据准备存贮", successList.size());
             saveData(successList, failList);
             successList.clear();
         }
@@ -78,23 +78,24 @@ public class ImportListener<T extends ImportErrVo> extends AnalysisEventListener
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+        log.info("所有数据解析完成最后剩{}条数据准备存贮", successList.size());
         saveData(successList, failList);
-        log.info("所有数据解析完成！");
-        if(!failList.isEmpty()){
+        log.info("所有数据解析完成！有" + failList.size() + "条不合法数据");
+        if (!failList.isEmpty()) {
             try {
-            response.setContentType("application/vnd.ms-excel");
-            response.setCharacterEncoding("utf-8");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH时mm分");
-            String fileName = URLEncoder.encode(LocalDateTime.now()
-                                                             .format(formatter) + "不合法数据", "UTF-8")
-                                        .replaceAll("\\+", "%20");
-            response.setHeader("Content-disposition", "attachment;filename*=''" + fileName + ".xls");
-            EasyExcel.write(response.getOutputStream(), BaseErrorVo.class)
-                     .sheet("不合法数据")
-                     .doWrite(failList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                response.setContentType("application/vnd.ms-excel");
+                response.setCharacterEncoding("utf-8");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH时mm分");
+                String fileName = URLEncoder.encode(LocalDateTime.now()
+                                                                 .format(formatter) + "不合法数据", "UTF-8")
+                                            .replaceAll("\\+", "%20");
+                response.setHeader("Content-disposition", "attachment;filename*=''" + fileName + ".xls");
+                EasyExcel.write(response.getOutputStream(), BaseErrorVo.class)
+                         .sheet("不合法数据")
+                         .doWrite(failList);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -102,8 +103,6 @@ public class ImportListener<T extends ImportErrVo> extends AnalysisEventListener
      * 加上存储数据库
      */
     private void saveData(List<T> successList, List<ImportErrVo> failList) {
-        log.info("{}条数据，开始存储数据库！", successList.size());
-        batchConsumer.accept(response, successList, failList);
-        log.info("存储数据库成功！");
+        batchConsumer.accept(successList, failList);
     }
 }

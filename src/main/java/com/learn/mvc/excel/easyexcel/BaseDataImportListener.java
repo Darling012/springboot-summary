@@ -34,7 +34,7 @@ public class BaseDataImportListener extends AnalysisEventListener<BaseImportEnti
     /**
      * 每隔500条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
-    private static final int BATCH_COUNT = 500;
+    private static final int BATCH_COUNT = 7;
     // 成功结果集
     List<BaseImportEntity> successList = new ArrayList<>();
     // 失败结果集
@@ -59,6 +59,7 @@ public class BaseDataImportListener extends AnalysisEventListener<BaseImportEnti
             failList.add(errorVo);
         }
         if (successList.size() >= BATCH_COUNT) {
+            System.out.println(BATCH_COUNT+"条开始存贮数据");
             saveData(successList, failList);
             successList.clear();
         }
@@ -66,6 +67,7 @@ public class BaseDataImportListener extends AnalysisEventListener<BaseImportEnti
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
+        System.out.println("所有数据解析完成最后剩"+successList.size()+"条数据存贮");
         saveData(successList, failList);
         log.info("所有数据解析完成！");
     }
