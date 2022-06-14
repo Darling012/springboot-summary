@@ -1,7 +1,7 @@
 package com.learn.mvc.excel.easyexcel;
 
 import com.alibaba.excel.EasyExcel;
-import com.learn.mvc.excel.common.ImportErrVo;
+import com.learn.mvc.excel.easyexcel.common.ImportErrVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

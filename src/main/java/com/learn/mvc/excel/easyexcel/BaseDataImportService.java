@@ -1,6 +1,6 @@
 package com.learn.mvc.excel.easyexcel;
 
-import com.learn.mvc.excel.common.ImportErrVo;
+import com.learn.mvc.excel.easyexcel.common.ImportErrVo;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;

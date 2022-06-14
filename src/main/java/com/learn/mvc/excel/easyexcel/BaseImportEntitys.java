@@ -1,7 +1,7 @@
 package com.learn.mvc.excel.easyexcel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.learn.mvc.excel.common.ImportErrVo;
+import com.learn.mvc.excel.easyexcel.common.ImportErrVo;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

@@ -1,7 +1,7 @@
 package com.learn.mvc.excel.easyexcel;
 
 import com.alibaba.excel.EasyExcel;
-import com.learn.mvc.excel.common.ImportListener;
+import com.learn.mvc.excel.easyexcel.common.ImportListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;

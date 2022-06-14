@@ -1,4 +1,4 @@
-package com.learn.mvc.excel.common;
+package com.learn.mvc.excel.easyexcel.common;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;

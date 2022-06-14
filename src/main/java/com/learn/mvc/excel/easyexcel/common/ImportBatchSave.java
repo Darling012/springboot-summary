@@ -1,4 +1,4 @@
-package com.learn.mvc.excel.common;
+package com.learn.mvc.excel.easyexcel.common;
 
 import java.util.List;
 
