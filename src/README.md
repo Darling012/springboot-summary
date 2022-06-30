@@ -137,19 +137,43 @@ filter ->servlet-> interceptor -> controllerAdvice -> aspect  -> controller
 
 
 
-rpc
+#### rpc
+
 ```java
         GenericResponse response = null;
         try {
             response = HttpClint.invoke();
         } catch (Exception exception) {
+            // httpClient调用产生的异常
             log.error();
             handlerErrorAndThrowExcetption(exception);
         }
+        // 调用成功返回结果
         if (response.code != 200) {
             handlerErrorAndThrowExcetption();
         }
         Pojo pojo = response.getData();
 ```
 
+**能否用布尔值代替void作为返回值？**
+
+https://www.zhihu.com/question/321451061
+
+不行
+
+1. 语义混淆，假如单指程序是否成功运行，那false的时候，就会包含多种情况，不明确。
+2. 对于确实不需要返回的函数它是过度设计了，对于 false 不能明确失败原因的场景，还是要引入异常或其他机制，而代码逻辑因此要分散到返回值和异常两个不同的执行路径，无谓增加圈复杂度。那还不如统一用异常好了，或者类似 Go 的做法，返回 （result, error)。
+3. 就是函数的调用方只知道是否成功，但是并不知道失败的原因是什么。所以 Go 和 Lua 的惯用手法除了布尔值表示成功失败以外，还会有个错误原因的额外返回值。WIN32 API则要么提供`GetLastError` ，要么用的`HRESULT` 代替布尔值来提供异常原因。
+4. 测试单元的方法 明确要求是void的
+5. 如果确定函数内不会有问题或意外发生的，那返回true或false没意义，如果会有意外发生的，那true或false不足够携带所有信息
+
+
+
+##### 讨论Rpc情况
+
+既然不能用布尔值代替，那么void函数执行失败应该抛出异常。在多模块情况下，就是当前模块抛出异常，统一捕获封装。调用模块判断结果，若失败则抛出异常。即上边模板所示流程。
+
+先讨论一下第一步httpClent的调用产生的异常，若此处不捕获，那么向外抛出，advice统一异常处理是可以捕获到的。在配合ribbion、熔断后，以及fegin自定义配置，猜测可捕获掉调用异常，如重试，但最后猜测都应该将异常传递到request线程，抛出由统一异常捕获返回前台。k12中，在统一异常处理中，捕获了RetryableException，k12用的是fegin自定义重试。且利用fegin的ErrorDecoder对异常进行了封装，并再次抛出异常，以在调用模块统一异常处理中捕获（用请求头判断了是否为fegin请求，但未看明白使用）。
+
+第二步判断调用结果，k12中在fegin统一处理了失败请求，再次抛出异常，但这样统一处理，没法细分业务，根据返回信息特定处理业务。
 
