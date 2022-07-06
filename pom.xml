@@ -69,32 +69,32 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
         <!--easypoi-->
-<!--        <dependency>-->
-<!--            <groupId>cn.afterturn</groupId>-->
-<!--            <artifactId>easypoi-base</artifactId>-->
-<!--            <version>3.0.3</version>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <artifactId>poi</artifactId>-->
-<!--                    <groupId>org.apache.poi</groupId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>cn.afterturn</groupId>-->
-<!--            <artifactId>easypoi-web</artifactId>-->
-<!--            <version>3.0.3</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>cn.afterturn</groupId>-->
-<!--            <artifactId>easypoi-annotation</artifactId>-->
-<!--            <version>3.0.3</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.liferay</groupId>-->
-<!--            <artifactId>org.apache.commons.fileupload</artifactId>-->
-<!--            <version>1.2.2.LIFERAY-PATCHED-1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.afterturn</groupId>-->
+        <!--            <artifactId>easypoi-base</artifactId>-->
+        <!--            <version>3.0.3</version>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <artifactId>poi</artifactId>-->
+        <!--                    <groupId>org.apache.poi</groupId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.afterturn</groupId>-->
+        <!--            <artifactId>easypoi-web</artifactId>-->
+        <!--            <version>3.0.3</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.afterturn</groupId>-->
+        <!--            <artifactId>easypoi-annotation</artifactId>-->
+        <!--            <version>3.0.3</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.liferay</groupId>-->
+        <!--            <artifactId>org.apache.commons.fileupload</artifactId>-->
+        <!--            <version>1.2.2.LIFERAY-PATCHED-1</version>-->
+        <!--        </dependency>-->
         <!-- 阿里easyexcel       -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -146,6 +146,12 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.66</version>
+        </dependency>
+        <!--        输出到logstash-->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>4.11</version>
         </dependency>
     </dependencies>
 

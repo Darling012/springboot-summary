@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: spring-boot-summary
   profiles:
     active: dev
   redis:

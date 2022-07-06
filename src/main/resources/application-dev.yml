@@ -30,4 +30,5 @@ logging:
     root: info
     org.apache.http.wire: debug
     org.apache.http.headers: debug
+    com.learn.mvc: debug
   config: classpath:logback-spring.xml

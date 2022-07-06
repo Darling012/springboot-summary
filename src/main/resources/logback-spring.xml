@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--加载的先后顺序为logback.xml ➡ application.properties ➡ logback-spring.xml-->
 <!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
+<!-- 比如如果root的级别是DEBUG，那么会输出DEBUG以及DEBUG级别以上的日志，也就是会输出DEBUG ，INFO ， WARN 和ERROR。-->
 <!-- scan:当此属性设置为true时，配置文档如果发生改变，将会被重新加载，默认值为true -->
 <!-- scanPeriod:设置监测配置文档是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。
                  当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
 <!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
 <configuration scan="true" scanPeriod="10 seconds">
-<!-- 每个logger都关联到logger上下文，默认上下文名称为“default”。但可以使用contextName标签设置成其他名字，用于区分不同应用程序的记录-->
+    <!-- 每个logger都关联到logger上下文，默认上下文名称为“default”。但可以使用contextName标签设置成其他名字，用于区分不同应用程序的记录-->
     <contextName>logback</contextName>
 
     <!-- name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义后，可以使“${}”来使用变量。 -->
     <property name="log.path" value="./log"/>
+
+    <springProperty name="SERVICE_NAME" scope="context" source="spring.application.name"/>
+    <springProperty name="LOG_STASH_HOST" scope="context" source="logstash.host" defaultValue="192.168.215.54"/>
+    <springProperty name="LOG_STASH_PORT" scope="context" source="logstash.port" defaultValue="4561"/>
 
     <!--0. 日志格式和颜色渲染 -->
     <!-- 彩色日志依赖的渲染类 -->
@@ -22,8 +28,8 @@
     <property name="CONSOLE_LOG_PATTERN"
               value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr[%X{ctxLogId}] %clr(---){faint} %clr([%t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
-     <property name="LOG_PATTERN"
-          value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}|${PID:- }|%level|${LOG_LEVEL_PATTERN:-%5p}|%15.15t|%-40.40logger{39}: %msg%n"/>
+    <property name="LOG_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}|${PID:- }|%level|${LOG_LEVEL_PATTERN:-%5p}|%15.15t|%-40.40logger{39}: %msg%n"/>
     <!--1. 输出到控制台-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
@@ -144,6 +150,36 @@
         </filter>
     </appender>
 
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!--可以访问的logstash日志收集端口-->
+        <destination>${LOG_STASH_HOST}:${LOG_STASH_PORT}</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>Asia/Shanghai</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "SERVICE_NAME":"${SERVICE_NAME}",
+                        "traceid":"%X{traceid}",
+                        "ip": "%X{ip}",
+                        "server_name": "%X{server_name}",
+                        "level": "%level",
+                        "trace": "%X{X-B3-TraceId:-}",
+                        "span": "%X{X-B3-SpanId:-}",
+                        "parent": "%X{X-B3-ParentSpanId:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40} - %M:%L",
+                        "message": "%message",
+                        "stack_trace": "%exception{10}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
     <!--
         <logger>用来设置某一个包或者具体的某一个类的日志打印级别、
         以及指定<appender>。<logger>仅有一个name属性，
@@ -176,13 +212,16 @@
     <!-- 4. 最终的策略 -->
     <!-- 4.1 开发环境:打印控制台-->
     <springProfile name="dev">
+        <!--  yml里配置优先级高于此处配置 -->
         <logger name="com.learn.mvc" level="info"/>
-        <root level="info">
+        <logger level="INFO" name="org.springframework"/>
+        <root level="debug">
             <appender-ref ref="CONSOLE"/>
-<!--            <appender-ref ref="DEBUG_FILE"/>-->
-<!--            <appender-ref ref="INFO_FILE"/>-->
-<!--            <appender-ref ref="WARN_FILE"/>-->
-<!--            <appender-ref ref="ERROR_FILE"/>-->
+            <appender-ref ref="LOGSTASH"/>
+            <!--            <appender-ref ref="DEBUG_FILE"/>-->
+            <!--            <appender-ref ref="INFO_FILE"/>-->
+            <!--            <appender-ref ref="WARN_FILE"/>-->
+            <!--            <appender-ref ref="ERROR_FILE"/>-->
         </root>
     </springProfile>
 
