@@ -169,6 +169,17 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!--   https://blog.51cto.com/u_12099683/3671194         -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>${}</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
