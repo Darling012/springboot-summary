@@ -1,7 +1,9 @@
+server:
+  port: 18082
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT
+    url: jdbc:mysql://192.168.215.54:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT
     username: root
     password: root
   jpa:
