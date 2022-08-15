@@ -29,13 +29,17 @@
 3. 缓存
 4. 定时任务，批处理
 
-#### 统一参数校验
+#### 统一参数合法性校验
 
 spring 和 jsr提供的注解异同及校验时机？
 
 1. Validator  解决参数校验
 2. Spring Assert  解决业务校验
 3. optional 辅助解决
+
+[参数业务逻辑校验](#数据业务逻辑校验)
+
+[NPE](#NPE)
 
 #### 统一异常处理
 
@@ -136,7 +140,22 @@ spring事件监听默认同步阻塞，实现异步借助@Async。
 
 filter ->servlet-> interceptor -> controllerAdvice -> aspect  -> controller
 
+#### excel导入数据
+1. 解析Excel，数据正确性校验
+   1. 能正确解析的数据parseSuccessList
+   2. 解析失败的数据failList,失败原因
+2. parseSuccessList进行业务性校验
+   1. 符合业务规则可入库的数据readyList
+   2. 不符合业务规则的数据放入failList,失败原因
+3. readyList进行入库
+   1. 成功
+   2. 失败数据放入failList,失败原因
 
+
+
+PS：
+[数据校验问题](#数据业务逻辑校验)，无业务的必填长短等校验通过Java Bean Validation，从各层中抽取出来在bean上做。
+有业务逻辑的校验如数据唯一性，目前看要提取出校验接口然后调用比较合理。像新增学生只涉及一个表操作的，无论数据来源web还是excel导入还是微信同步，都能在新增学生接口控制字段唯一，没有提前业务验证到三个入口的必要。业务验证前置的是因为涉及多个表多个模块避免做补偿。
 
 
 
@@ -245,3 +264,126 @@ pojo自包含验证方法：
 1. https://zhuanlan.zhihu.com/p/268454670
 2. https://blog.csdn.net/xingsfdz/article/details/81105683
 3. https://blog.csdn.net/Shockang/article/details/115610063
+
+### 缓存
+
+#### mybatis
+
+1. 一级缓存默认开启，事务开启后，同一个sqlSession下的get请求
+2. 二级缓存可依赖
+
+refrence
+
+1. https://zhuanlan.zhihu.com/p/142794376
+2. https://tech.meituan.com/2018/01/19/mybatis-cache.html
+
+#### spring
+
+#### 本地缓存
+
+#### 集中式缓存
+
+#### 双写一致性
+
+### NPE
+
+发生NPE的情况：
+
+1. **在空对象上调用实例方法**。对空对象调用静态方法或类方法时，不会报 NPE，因为静态方法不需要实例来调用任何方法；
+2. **访问或更改空对象上的任何变量或字段时**；
+3. **抛出异常时抛出 null**；
+4. **数组为 null 时，访问数组长度**；
+5. **数组为 null 时，访问或更改数组的插槽**；
+6. **对空对象进行同步或在同步块内使用 null**。
+7. 参数是Integer等包装类，自动拆箱时
+8. 字符串比较
+9. 如ConcurrentHashMap这种不支持K.V为null的容器
+10. A对象包含B对象，通过A对象的字段获得B对象后，没有判空B就调用B的方法
+11. 方法或其它服务返回的List不是空而是null，没有进行判空就直接调用List的方法
+12. 
+
+##### 1. 查询
+
+敏感信息处理，字典转换
+
+###### 1. 分页查询
+
+1. pojo中属性，哪个有值查哪个。注意时间段查询边界问题。
+
+###### 2. 单个查询
+
+##### 2.删除
+
+级联删除业务问题
+
+###### 1. 批量删除
+
+###### 2. 单个删除
+
+##### 3.新增
+
+新增只需要保证不可重复的属性数据库中未存在即可。
+
+1. 业务判断
+   1. 不能跟表中数据重复
+
+```Bash
+carService.lambdaQuery()
+        .eq(Car::getCarNum, carVO.getCarNum())
+        .select(Car::getId)
+        .oneOpt()
+        .ifPresent(cars->{throw new BizException("车牌号已存在,请重新绑定");});
+1. param中属性需要关联已有数据
+BizUserBase bizUserBase = bizUserBaseService.lambdaQuery()
+        .eq(BizUserBase::getId, bizUser.getBaseUserId())
+        .select(BizUserBase::getPhone, BizUserBase::getSex,BizUserBase::getIdCard).oneOpt()
+        .orElseThrow(()->  new BizException("不存在相关用户基础信息"));
+```
+
+1. copyProperties
+2. save
+
+##### 4. 修改
+
+修改需要保证业务上具有唯一性的字段数据库中唯一，这就把前台修改分为两种，一种是非唯一字段修改，一种唯一字段修改。
+
+唯一字段修改需保证修改后数据库中仍然唯一，当修改后传入到后台，拿着此字段查询数据库，若查不出来则说明数据库没有，可以修改，若查出来，因为是修改后的，所以判断传入id与查出来的id会不一致，说明改重复了，不允许。而非唯一字段修改后，肯定会查出来，此时比对，俩id相同，这种情况允许。
+
+1. 业务判断，某业务上具有唯一性属性修改后的数据不能跟已有数据重复
+
+```Bash
+carService.lambdaQuery().eq(Car::getCarNum, carVO.getCarNum()).select(Car::getId).oneOpt().ifPresent(cars->{
+    if (!Objects.equals(cars.getId(), carVO.getId())){
+       throw new BizException("车牌号已存在,本次绑定无效");
+    }
+});
+```
+
+1. copyProperties
+2. save
+
+refrence
+
+1. https://blessing.blog.csdn.net/article/details/109631779
+2. https://blog.csdn.net/qq_45893748/article/details/118668620
+3. https://blog.csdn.net/qq_33152199/article/details/53312368
+4. https://blog.csdn.net/Samurai_L/article/details/102859598
+5. https://www.jianshu.com/p/a187bffcfe1c
+6. https://www.cnblogs.com/wang-min/p/10445607.html
+7. https://blog.csdn.net/sinat_38239454/article/details/116519105
+
+
+
+mybatisplus 的ne  简化
+
+### 接口对接
+
+##### 问题
+
+1. 如何保证数据在传输过程中的安全性
+2. 数据已经到达服务器端，服务器端如何识别数据，如何不被攻击
+
+##### 问题1解决
+
+1. https
+2. 非对称加密
