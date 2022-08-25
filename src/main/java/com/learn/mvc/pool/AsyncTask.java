@@ -12,6 +12,7 @@ public class AsyncTask {
     @Async
     public void doTask1() {
         log.info("异步调用了doTask1");
+         throw new RuntimeException("异步调用doTask1抛出异常");
     }
 
     @Async

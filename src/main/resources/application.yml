@@ -1,6 +1,7 @@
 spring:
   application:
-    name: ${project.name}
+#    name: ${project.name}
+    name: @project.name@
   profiles:
     active: dev
   redis:

@@ -45,10 +45,10 @@ public class TestController {
         // RequestContextHolder.setRequestAttributes(RequestContextHolder.getRequestAttributes(), true);
         asyncPoolTaskExecutor.execute(() -> {
             // 1. 第一种单独复制，这样每个都要写
-            // RequestContextHolder.setRequestAttributes(requestAttributes);
-            // RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-            // String name = (String) attributes.getAttribute("name", RequestAttributes.SCOPE_SESSION);
-            // log.info("线程池中线程------从session中获取数据:{}", name);
+            RequestContextHolder.setRequestAttributes(requestAttributes);
+            RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+            String name = (String) attributes.getAttribute("name", RequestAttributes.SCOPE_SESSION);
+            log.info("线程池中线程------从session中获取数据:{}", name);
             throw new RuntimeException("子线程抛出异常");
         });
         log.info("子线程抛出异常,父线程不受影响");
@@ -67,15 +67,23 @@ public class TestController {
         // } catch (Exception e) {
         //   log.info("捕获到future.get异常{}",e.getMessage());
         // }
+
+
+        //测试当前线程子线程是否可获取父线程mdc数据
+        new Thread(()->{
+            log.info("看看我有没有mdc数据");
+
+        }).start();
     }
 
      @GetMapping("/task")
     public void task() throws InterruptedException {
-        // asyncTask.doTask1();
-       try {
-            asyncTask.doTask2();
-       }catch (Exception e){
-           log.error("子线程异常");
-       }
+        asyncTask.doTask1();
+
+       // try {
+       //      asyncTask.doTask2();
+       // }catch (Exception e){
+       //     log.error("子线程异常");
+       // }
     }
 }
