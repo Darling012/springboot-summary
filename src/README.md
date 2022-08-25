@@ -151,15 +151,13 @@ filter ->servlet-> interceptor -> controllerAdvice -> aspect  -> controller
    1. 成功
    2. 失败数据放入failList,失败原因
 
+[mybatisPlus批量操作]()
 
+[多线程事务]()
 
 PS：
 [数据校验问题](#数据业务逻辑校验)，无业务的必填长短等校验通过Java Bean Validation，从各层中抽取出来在bean上做。
 有业务逻辑的校验如数据唯一性，目前看要提取出校验接口然后调用比较合理。像新增学生只涉及一个表操作的，无论数据来源web还是excel导入还是微信同步，都能在新增学生接口控制字段唯一，没有提前业务验证到三个入口的必要。业务验证前置的是因为涉及多个表多个模块避免做补偿。
-
-
-
-
 
 #### rpc
 
@@ -229,8 +227,9 @@ https://www.zhihu.com/question/321451061
    7. https://developer.51cto.com/article/704511.html 并发场景下唯一性字段判断失效，如何幂等
 
 2. 以及在以往代码里入库操作往往统一切面处理异常，是否有必要针对jdbc异常或数据库异常进行异常处理？感觉对于前端没有必要，后台日志有必要细分这些数据库异常。
-   1. 如果是java程序需要捕获：DuplicateKeyException异常，如果使用了spring框架还需要捕获：MySQLIntegrityConstraintViolationException异常。
-
+   
+1. 如果是java程序需要捕获：DuplicateKeyException异常，如果使用了spring框架还需要捕获：MySQLIntegrityConstraintViolationException异常。
+   
 3. 这里还有一个点是当前业务流程为A-》B-》C,那么BC的业务性校验是否有必要提前到入口A处？假如提到A处就会出现耦合，也存在别的地方调BC接口情况。假如不提前，若A处有数据入库就要做补偿。把BC业务验证再提供一个接口，在A中先验证数据，再执行业务。另一个思路是DDD,pojo中包含自验证方法。
 
 
@@ -345,9 +344,19 @@ BizUserBase bizUserBase = bizUserBaseService.lambdaQuery()
 
 ##### 4. 修改
 
-修改需要保证业务上具有唯一性的字段数据库中唯一，这就把前台修改分为两种，一种是非唯一字段修改，一种唯一字段修改。
+修改需要保证业务上具有唯一性的字段数据库中唯一，这就把前台修改分为两种：
 
-唯一字段修改需保证修改后数据库中仍然唯一，当修改后传入到后台，拿着此字段查询数据库，若查不出来则说明数据库没有，可以修改，若查出来，因为是修改后的，所以判断传入id与查出来的id会不一致，说明改重复了，不允许。而非唯一字段修改后，肯定会查出来，此时比对，俩id相同，这种情况允许。
+1. 一种是非唯一字段修改
+2. 一种唯一字段修改
+
+我们不知道前台是哪种修改，但我们要保证数据库中唯一性字段的不重复。具体讨论为：
+
+1. 用唯一字段去数据库查，没有查到数据。说明当前pojo修改了唯一字段的数据，且没有重复，允许修改。（唯一性字段相等没有数据）
+2. 用唯一字段去数据库查，查到数据了，此时就要判断ID是否为它本身：
+   1. 第一种是，ID相等，查出的来是它本身，情况为当前pojo没有修改唯一字段，修改了其他字段，允许修改；（唯一性字段相等，且ID相等）
+   2. 第二种是，ID不相等，查出来的不是它本身，则当前pojo的唯一性字段为修改后的值且与数据库重复。不允许修改。（唯一性字段相等，且ID不相等）
+
+**总结为**：若存在唯一性字段相等且ID不相等的数据，则重复。
 
 1. 业务判断，某业务上具有唯一性属性修改后的数据不能跟已有数据重复
 
@@ -366,13 +375,8 @@ refrence
 
 1. https://blessing.blog.csdn.net/article/details/109631779
 2. https://blog.csdn.net/qq_45893748/article/details/118668620
-3. https://blog.csdn.net/qq_33152199/article/details/53312368
 4. https://blog.csdn.net/Samurai_L/article/details/102859598
 5. https://www.jianshu.com/p/a187bffcfe1c
-6. https://www.cnblogs.com/wang-min/p/10445607.html
-7. https://blog.csdn.net/sinat_38239454/article/details/116519105
-
-
 
 mybatisplus 的ne  简化
 
@@ -387,3 +391,30 @@ mybatisplus 的ne  简化
 
 1. https
 2. 非对称加密
+
+### mybatisPlus批量操作
+
+1. 单条sql，批量提交
+   1. 需要开启数据库批量提交rewriteBatchedStatements=true
+   2. mybatisplus的saveOrUpdateBatch会生成一条查询sql
+   3. https://www.jianshu.com/p/7eb8eec78b9a
+   4. https://blog.csdn.net/qq271859852/article/details/79562262
+   5. https://www.jianshu.com/p/04d3d235cb9f
+   6. https://github.com/baomidou/mybatis-plus/issues/2456
+   7. https://github.com/baomidou/mybatis-plus/issues/2786
+2. 大sql更新
+   1. insert into user(id, name, age) values (1, "a", 17), (2,"b", 18)
+      1. https://cloud.tencent.com/developer/article/1886324
+   2. 数据量过大或字段过多造成拼接sql过长问题
+      1. 改参数
+
+##### mySql执行以上两种sql效率分析
+
+1. https://segmentfault.com/a/1190000008890065
+
+#### 逻辑删除与唯一索引冲突
+
+https://baobao555.tech/archives/39
+
+https://chsm1998.github.io/2020/08/29/logical-deletion-and-unique-index/
+
