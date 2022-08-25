@@ -54,6 +54,7 @@ public class AsyncConfiguration implements AsyncConfigurer {
      * When an @Async method has a Future-typed return value,
      * it is easy to manage an exception that was thrown during the method execution,
      * as this exception is thrown when calling get on the Future result. With a void return type, however, the exception is uncaught and cannot be transmitted. You can provide an AsyncUncaughtExceptionHandler to handle such exceptions
+     *
      * 用于@async 注释的 void 方法 捕获异常
      *
      * @return
