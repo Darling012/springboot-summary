@@ -49,6 +49,9 @@ spring 和 jsr提供的注解异同及校验时机？
 2. 注解
 3. 当两种方式都实现时，HandlerExceptionResolver要先于ControllerAdvice执行
 4. 404等，继承AbstractErrorController、ResponseEntityExceptionHandler
+5. 自定义ExceptionUtil
+   1. 打印有效信息
+   2. 将traceId、spanId放入统一返回体中
 
 ##### 异常处理原则：
 
@@ -67,17 +70,6 @@ spring 和 jsr提供的注解异同及校验时机？
 5. 根据类型进行匹配，匹配不到getCause（）再匹配，匹配多个排序后取第一个
 
 #### 统一日志处理
-
-问题：
-
-1. 跨线程　　TaskDecorator
-2. 跨jvm 　　http调用拦截器
-
-##### 日志分类：
-
-1.
-
-
 
 #### 提供一个线程池：异步执行、定时任务、事件监听
 

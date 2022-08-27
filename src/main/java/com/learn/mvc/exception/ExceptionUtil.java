@@ -8,6 +8,9 @@ import java.io.StringWriter;
 
 /**
  * @author Darling
+ * https://blog.csdn.net/flw8840488/article/details/106625487*
+ * https://zhuanlan.zhihu.com/p/339448154
+ * https://blog.51cto.com/u_15437298/4694395
  */
 @Slf4j
 public class ExceptionUtil {

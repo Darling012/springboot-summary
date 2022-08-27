@@ -1,6 +1,7 @@
 package com.learn.mvc.exception;
 
 import com.learn.mvc.body.pojo.RespResult;
+import com.learn.mvc.exception.enums.GlobalExceptionCode;
 import com.learn.mvc.exception.enums.HttpStateCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -208,12 +209,12 @@ public class GlobalExceptionAdvice {
      * 统一处理未知异常
      * 如果 @ExceptionHandler 注解中未声明要处理的异常类型，则默认为参数列表中的异常类型
      */
-    // @ExceptionHandler
-    // public RespResult<Void> handleUnknownException(Exception e) {
-    //     // 未知异常
-    //     log.error("捕获到未经处理的未知异常, {}", e.getMessage());
-    //     log.error("", e);
-    //     return RespResult.fail(GlobalExceptionCode.ERROR);
-    // }
+    @ExceptionHandler
+    public RespResult<Void> handleUnknownException(Exception e) {
+        // 未知异常
+        log.error("捕获到未经处理的未知异常, {}", e.getMessage());
+        log.error("", e);
+        return RespResult.fail(GlobalExceptionCode.ERROR);
+    }
 
 }
