@@ -56,7 +56,8 @@ public class AsyncConfiguration implements AsyncConfigurer {
      * as this exception is thrown when calling get on the Future result. With a void return type, however, the exception is uncaught and cannot be transmitted. You can provide an AsyncUncaughtExceptionHandler to handle such exceptions
      *
      * 用于@async 注释的 void 方法 捕获异常
-     *
+     * 热乎乎的面经:Spring中Scheduled和Async两种调度方式有啥区别?
+     * https://developer.aliyun.com/article/807981
      * @return
      */
     @Override
