@@ -1,4 +1,4 @@
-package com.learn.mvc.controller;
+package com.learn.mvc.validation;
 
 import com.learn.mvc.controller.copier.StudentCopier;
 import com.learn.mvc.controller.pojo.StudentInfo;
@@ -6,7 +6,12 @@ import com.learn.mvc.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -51,7 +56,7 @@ public class ValidateTestController {
 
     // 查询参数
     @GetMapping("age")
-    public Integer getByAccount(@Min(6) Integer age) {
+    public Integer getByAccount( @Min(6) Integer age) {
         return 1;
     }
 }
