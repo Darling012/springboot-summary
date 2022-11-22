@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -57,6 +58,12 @@ public class ValidateTestController {
     // 查询参数
     @GetMapping("age")
     public Integer getByAccount( @Min(6) Integer age) {
+        return 1;
+    }
+
+    // 查询参数
+    @GetMapping("student")
+    public Integer getByAccount(@Valid StudentInfo studentInfo) {
         return 1;
     }
 }
