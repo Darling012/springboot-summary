@@ -13,20 +13,25 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.Formatter;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * 日期处理全局配置
+ * <see>https://segmentfault.com/a/1190000021906586</see>
  */
-// @Configuration
+@Configuration
 public class DateHandlerConfig {
 
     /**
@@ -73,6 +78,23 @@ public class DateHandlerConfig {
     // }
 
 
+
+
+    @Bean
+ public Formatter<LocalDateTime> localDateFormatter() {
+      return new Formatter<LocalDateTime>() {
+          @Override
+         public LocalDateTime parse(String text, Locale locale) throws ParseException {
+              return LocalDateTime.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+          }
+          @Override
+          public String print(LocalDateTime object, Locale locale) {
+              return object.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+          }
+        };
+    }
+
+
     @Bean
     public Converter<String, LocalDate> localDateConverter() {
         return new Converter<String, LocalDate>() {
@@ -89,7 +111,21 @@ public class DateHandlerConfig {
             @Override
             public LocalDateTime convert(String source) {
                 return LocalDateTime.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             }
+        };
+    }
+
+    // 平铺参数返回的都带T 这么写不管用 瞎蒙的 todo
+    @Bean
+    public Converter<LocalDateTime, String> localDateTime2StringConverter() {
+        return new Converter<LocalDateTime, String>() {
+            @Override
+            public String convert(LocalDateTime source) {
+
+                return source.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            }
+
         };
     }
 
@@ -121,7 +157,7 @@ public class DateHandlerConfig {
     }
 
     /**
-     * Json序列化和反序列化转换器，用于转换Post请求体中的json以及将我们的对象序列化为返回响应的json
+     * Json序列化和反序列化转换器，用于转换Post请求体中的json以及将我们的对象序列化为返回响应的json（非json序列化也会走比如平铺参数带T问题，会走下面配置的序列化方案，会去除掉，应该是总体的序列化方案）
      */
     @Bean
     public ObjectMapper objectMapper() {

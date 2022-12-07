@@ -34,7 +34,11 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <version>1.4.2.Final</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct.extensions.spring</groupId>
+            <artifactId>mapstruct-spring-annotations</artifactId>
+            <version>0.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -132,6 +136,13 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.redisson/redisson -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.15.5</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -169,11 +180,11 @@
             <artifactId>spring-integration-mqtt</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
-<!--            <version>3.1.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
+        <!--            <version>3.1.0</version>-->
+        <!--        </dependency>-->
 
 
     </dependencies>
@@ -185,6 +196,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
+<!--   https://www.cnblogs.com/tomcatandjerry/p/10342345.html-->
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
@@ -193,16 +205,47 @@
                 </configuration>
             </plugin>
             <!--   https://blog.51cto.com/u_12099683/3671194         -->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-resources-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <delimiters>-->
-<!--                        <delimiter>${}</delimiter>-->
-<!--                    </delimiters>-->
-<!--                    <useDefaultDelimiters>false</useDefaultDelimiters>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-resources-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <delimiters>-->
+            <!--                        <delimiter>${}</delimiter>-->
+            <!--                    </delimiters>-->
+            <!--                    <useDefaultDelimiters>false</useDefaultDelimiters>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                    <!-- lombok和mapstruct配置开始 -->
+                    <annotationProcessorPaths>
+                          <path>
+                           <groupId>org.projectlombok</groupId>
+                           <artifactId>lombok</artifactId>
+                           <version>${lombok.version}</version>
+                       </path>
+                       <path>
+                           <groupId>org.mapstruct</groupId>
+                           <artifactId>mapstruct-processor</artifactId>
+                           <version>1.4.2.Final</version>
+                       </path>
+                        <path>
+                            <groupId>org.mapstruct.extensions.spring</groupId>
+                            <artifactId>mapstruct-spring-extensions</artifactId>
+                            <version>0.1.1</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <!-- lombok和mapstruct配置结束 -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

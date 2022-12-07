@@ -1,6 +1,6 @@
 package com.learn.mvc.controller;
 
-import com.learn.mvc.controller.copier.StudentCopier;
+import com.learn.mvc.copier.StudentCopier;
 import com.learn.mvc.controller.pojo.StudentInfo;
 import com.learn.mvc.service.StudentService;
 import lombok.RequiredArgsConstructor;
