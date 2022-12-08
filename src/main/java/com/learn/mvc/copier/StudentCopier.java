@@ -1,4 +1,4 @@
-package com.learn.mvc.controller.copier;
+package com.learn.mvc.copier;
 
 import com.learn.mvc.controller.pojo.StudentInfo;
 import com.learn.mvc.annotation.BaseCopier;

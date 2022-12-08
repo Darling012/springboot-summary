@@ -1,6 +1,6 @@
 package com.learn.mvc.validation;
 
-import com.learn.mvc.controller.copier.StudentCopier;
+import com.learn.mvc.copier.StudentCopier;
 import com.learn.mvc.controller.pojo.StudentInfo;
 import com.learn.mvc.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class ValidateTestController {
      * @return
      */
     @PostMapping
-    public StudentInfo createStudent(@RequestBody @Validated StudentInfo studentInfo) {
+    public StudentInfo createStudent(@RequestBody  StudentInfo studentInfo) {
 
         // studentService.createStudent(studentCopier.voToEntity(studentInfo));
         studentInfo.setName(null);
@@ -52,7 +52,7 @@ public class ValidateTestController {
      */
     @GetMapping("{age}")
     public @Max(6) Integer detail(@PathVariable("age") @Min(6) Integer age) {
-        return 10;
+        return 6;
     }
 
     // 查询参数

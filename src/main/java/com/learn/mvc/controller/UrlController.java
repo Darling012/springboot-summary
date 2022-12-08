@@ -24,11 +24,13 @@ public class UrlController {
     public String says(@PathVariable("id") String a, @RequestParam("b") String b) {
         return "a: " + a + "b" + b;
     }
+
     @GetMapping(value = "/{a}/{c}")
     public String says(@PathVariable("a") String a, @PathParam("c") String c, @RequestParam("b") String b) {
         // return "a: " + a +"/"+ "b:" + b +"/"+ "c:" + c;
         return a + b + c;
     }
+
     //http://localhost:8080/hello/1/bye/2
     @RequestMapping(value = "/{a}/bye/{id}", method = RequestMethod.POST)
     public String sayBye(@PathVariable("id") Integer id, @PathVariable("a") Integer a) {
@@ -47,6 +49,7 @@ public class UrlController {
         System.out.println(women);
         return c;
     }
+
     //http://localhost:8080/hello/say?id=1
     @GetMapping(value = "/say")
     public String say(@RequestParam(value = "id", required = false, defaultValue = "0") Integer myId) {
@@ -61,7 +64,8 @@ public class UrlController {
     }
 
 
-//   post请求　body为formdata格式 多个参数 可以不写注解，名称匹配。params参数还是用@RequestParam。且params与formdata里数据名有重复，会成一个数组  TODO
-// post请求　body为formdata格式 可用@RequestParam获取参数，不写也能获取到
+    //   post请求　body为formdata格式 多个参数 可以不写注解，名称匹配。params参数还是用@RequestParam。且params与formdata里数据名有重复，会成一个数组  TODO
+    // post请求　body为formdata格式 可用@RequestParam获取参数，不写也能获取到
+    //    https://www.cnblogs.com/acm-bingzi/p/spring_auto_box.html
 
 }
