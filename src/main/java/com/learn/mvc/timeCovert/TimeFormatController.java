@@ -46,8 +46,10 @@ public class TimeFormatController {
     public TimeParam testRequestParamPojo(TimeParam time) {
         return time;
     }
+
     @PostMapping("post/request-body-pojo")
     public TimeParam testPostRequestBody(@RequestBody  TimeParam time) {
+        System.out.println(time.getTime());
         return time;
     }
 
